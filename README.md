@@ -16,3 +16,6 @@ The stretch option will make the image fill the entire dialog space.
 
 The bordered option will add an indicator border around the image so you can figure out the boundary of an image with transparency.
 ![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/e4ce3b8a-a81b-4f38-9423-3313cc6e60d4)
+
+## Contributing
+PRs and suggestions are welcome, or you can fork this project and make your own enhancements.
