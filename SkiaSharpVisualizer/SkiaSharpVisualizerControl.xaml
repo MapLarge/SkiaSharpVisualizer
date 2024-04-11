@@ -1,0 +1,88 @@
+﻿<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:src="clr-namespace:SkiaSharpVisualizer"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:vs="http://schemas.microsoft.com/visualstudio/extensibility/2022/xaml"
+              xmlns:styles="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+              xmlns:colors="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+			  >
+	<DataTemplate.Resources>
+		<Style TargetType="Label" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
+		<Style TargetType="TextBox" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.TextBoxStyleKey}}" />
+		<Style TargetType="CheckBox" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.CheckBoxStyleKey}}" />
+	</DataTemplate.Resources>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="5px" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="5px" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Grid.Column="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="auto"></ColumnDefinition>
+				<ColumnDefinition Width="5px"></ColumnDefinition>
+				<ColumnDefinition Width="75px"></ColumnDefinition>
+				<ColumnDefinition Width="*"></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="auto" />
+				<RowDefinition Height="5px" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+			<Label Target="ImageWidth" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="0" Grid.Column="0" Content="_Width:" />
+			<TextBox Name="ImageWidth" VerticalContentAlignment="Center" VerticalAlignment="Center" TextAlignment="Right" IsReadOnly="True" Text="{Binding Path=Width}" Grid.Row="0" Grid.Column="2" />
+			<Label Target="ImageHeight" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" Grid.Row="2" Grid.Column="0" Content="_Height:" />
+			<TextBox Name="ImageHeight" VerticalAlignment="Center" TextAlignment="Right" IsReadOnly="True" Text="{Binding Path=Height}" Grid.Row="2" Grid.Column="2" />
+		</Grid>
+		<StackPanel Grid.Row="2" Orientation="Horizontal">
+			<CheckBox Content="_Stretch?" IsChecked="{Binding IsStretched}" />
+			<CheckBox Margin="5px,0,0,0" Content="_Bordered?" IsChecked="{Binding IsBordered}" />
+		</StackPanel>
+		<Border Margin="0,5,0,5" BorderThickness="2" Padding="0" Grid.Row="4">
+			<Border.BorderBrush>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Color="Yellow" Offset="0.0" />
+					<GradientStop Color="Red" Offset="0.25" />
+					<GradientStop Color="Blue" Offset="0.75" />
+					<GradientStop Color="LimeGreen" Offset="1.0" />
+				</LinearGradientBrush>
+			</Border.BorderBrush>
+			<Border.Background>
+				<VisualBrush TileMode="Tile" Viewport="0, 0, 16, 16" ViewportUnits="Absolute">
+					<VisualBrush.Visual>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<Rectangle Grid.Row="0" Grid.Column="0" Width="16" Height="16" Fill="#d7d7d7" />
+							<Rectangle Grid.Row="0" Grid.Column="1" Width="16" Height="16" Fill="#ffffff" />
+							<Rectangle Grid.Row="1" Grid.Column="0" Width="16" Height="16" Fill="#ffffff" />
+							<Rectangle Grid.Row="1" Grid.Column="1" Width="16" Height="16" Fill="#d7d7d7" />
+						</Grid>
+					</VisualBrush.Visual>
+				</VisualBrush>
+			</Border.Background>
+			<Border BorderThickness="{Binding BorderThickness}" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<Border.BorderBrush>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+						<GradientStop Color="LimeGreen" Offset="0" />
+						<GradientStop Color="Blue" Offset="0.25" />
+						<GradientStop Color="Red" Offset="0.75" />
+						<GradientStop Color="Yellow" Offset="1.0" />
+					</LinearGradientBrush>
+				</Border.BorderBrush>
+				<!-- BitmapScalingMode HighQuality and SnapsToDevicePixels False makes this look nicer w/ differing monitor DPIs / scale percentages -->
+				<Image Name="Image" RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="False" Source="{Binding Path=FilePath}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="{Binding ImageStretch}" />
+			</Border>
+		</Border>
+	</Grid>
+</DataTemplate>

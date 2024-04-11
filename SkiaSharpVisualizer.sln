@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiaSharpVisualizer", "SkiaSharpVisualizer\SkiaSharpVisualizer.csproj", "{1E8D3F65-F34F-41FF-8711-1D8D73350487}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkiaSharpVisualizerSource", "SkiaSharpVisualizerSource\SkiaSharpVisualizerSource.csproj", "{B5993999-1646-452B-85EC-ED5155DA370C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E8D3F65-F34F-41FF-8711-1D8D73350487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E8D3F65-F34F-41FF-8711-1D8D73350487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E8D3F65-F34F-41FF-8711-1D8D73350487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E8D3F65-F34F-41FF-8711-1D8D73350487}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5993999-1646-452B-85EC-ED5155DA370C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5993999-1646-452B-85EC-ED5155DA370C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5993999-1646-452B-85EC-ED5155DA370C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5993999-1646-452B-85EC-ED5155DA370C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6B6DE13-3B7C-4285-863C-E9DB2B513A00}
+	EndGlobalSection
+EndGlobal

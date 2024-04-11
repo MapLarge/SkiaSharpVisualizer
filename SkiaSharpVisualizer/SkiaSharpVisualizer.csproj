@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyVersion>1.0.2</AssemblyVersion>
+		<FileVersion>1.0.2</FileVersion>
+		<Title>SkiaSharp Visualizer</Title>
+		<Company>MapLarge</Company>
+		<PackageProjectUrl>https://github.com/MapLarge/SkiaSharpVisualizer</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MapLarge/SkiaSharpVisualizer</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Compile Remove="SkiaSharpVisualizerControl.xaml.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="SkiaSharpVisualizerControl.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Extensibility.Sdk" Version="17.9.2092" />
+		<PackageReference Include="Microsoft.VisualStudio.Extensibility.Build" Version="17.9.2092" />
+		<PackageReference Include="SkiaSharp" Version="2.88.6" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\SkiaSharpVisualizerSource\bin\$(Configuration)\netstandard2.0\SkiaSharpVisualizerSource.dll" Link="netstandard2.0\SkiaSharpVisualizerSource.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Remove="SkiaSharpVisualizerControl.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="SkiaSharpVisualizerControl.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SkiaSharpVisualizerSource\SkiaSharpVisualizerSource.csproj" />
+	</ItemGroup>
+</Project>

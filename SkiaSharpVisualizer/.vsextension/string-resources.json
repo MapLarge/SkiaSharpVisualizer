@@ -1,0 +1,5 @@
+{
+	"SkiaSharpVisualizer.SkiaSharpVisualizerProvider.SKBitmap.DisplayName": "SKBitmap Visualizer",
+	"SkiaSharpVisualizer.SkiaSharpVisualizerProvider.SKImage.DisplayName": "SKImage Visualizer",
+	"SkiaSharpVisualizer.SkiaSharpVisualizerProvider.SKSurface.DisplayName": "SKSurface Visualizer"
+}
