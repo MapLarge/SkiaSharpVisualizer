@@ -7,6 +7,7 @@
 			  >
 	<DataTemplate.Resources>
 		<Style TargetType="Label" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.ThemedDialogLabelStyleKey}}" />
+		<Style TargetType="Button" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.ButtonStyleKey}}" />
 		<Style TargetType="TextBox" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.TextBoxStyleKey}}" />
 		<Style TargetType="CheckBox" BasedOn="{StaticResource {x:Static styles:VsResourceKeys.CheckBoxStyleKey}}" />
 	</DataTemplate.Resources>
@@ -39,10 +40,11 @@
 			<TextBox Name="ImageHeight" VerticalAlignment="Center" TextAlignment="Right" IsReadOnly="True" Text="{Binding Path=Height}" Grid.Row="2" Grid.Column="2" />
 		</Grid>
 		<StackPanel Grid.Row="2" Orientation="Horizontal">
-			<CheckBox Content="_Stretch?" IsChecked="{Binding IsStretched}" />
-			<CheckBox Margin="5px,0,0,0" Content="_Bordered?" IsChecked="{Binding IsBordered}" />
+			<CheckBox VerticalAlignment="Center" Content="_Stretch?" IsChecked="{Binding IsStretched}" />
+			<CheckBox VerticalAlignment="Center" Margin="5px,0,0,0" Content="_Bordered?" IsChecked="{Binding IsBordered}" />
+			<Button Content="Open In External Viewer" Margin="5px,0,0,0" MinWidth="100px" Command="{Binding OpenExternalCommand}" CommandParameter="{Binding FilePath}" />
 		</StackPanel>
-		<Border Margin="0,5,0,5" BorderThickness="2" Padding="0" Grid.Row="4">
+		<Border Margin="0,5,0,5" BorderThickness="0" Padding="0" Grid.Row="4">
 			<Border.BorderBrush>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
 					<GradientStop Color="Yellow" Offset="0.0" />
@@ -51,26 +53,6 @@
 					<GradientStop Color="LimeGreen" Offset="1.0" />
 				</LinearGradientBrush>
 			</Border.BorderBrush>
-			<Border.Background>
-				<VisualBrush TileMode="Tile" Viewport="0, 0, 16, 16" ViewportUnits="Absolute">
-					<VisualBrush.Visual>
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="*" />
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
-							<Rectangle Grid.Row="0" Grid.Column="0" Width="16" Height="16" Fill="#d7d7d7" />
-							<Rectangle Grid.Row="0" Grid.Column="1" Width="16" Height="16" Fill="#ffffff" />
-							<Rectangle Grid.Row="1" Grid.Column="0" Width="16" Height="16" Fill="#ffffff" />
-							<Rectangle Grid.Row="1" Grid.Column="1" Width="16" Height="16" Fill="#d7d7d7" />
-						</Grid>
-					</VisualBrush.Visual>
-				</VisualBrush>
-			</Border.Background>
 			<Border BorderThickness="{Binding BorderThickness}" HorizontalAlignment="Center" VerticalAlignment="Center">
 				<Border.BorderBrush>
 					<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -80,8 +62,30 @@
 						<GradientStop Color="Yellow" Offset="1.0" />
 					</LinearGradientBrush>
 				</Border.BorderBrush>
-				<!-- BitmapScalingMode HighQuality and SnapsToDevicePixels False makes this look nicer w/ differing monitor DPIs / scale percentages -->
-				<Image Name="Image" RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="False" Source="{Binding Path=FilePath}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="{Binding ImageStretch}" />
+				<Border BorderThickness="0" Padding="0" Margin="0">
+					<Border.Background>
+						<VisualBrush TileMode="Tile" Viewport="0, 0, 16, 16" ViewportUnits="Absolute">
+							<VisualBrush.Visual>
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="*" />
+										<RowDefinition Height="*" />
+									</Grid.RowDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="*" />
+									</Grid.ColumnDefinitions>
+									<Rectangle Grid.Row="0" Grid.Column="0" Width="16" Height="16" Fill="#d7d7d7" />
+									<Rectangle Grid.Row="0" Grid.Column="1" Width="16" Height="16" Fill="#ffffff" />
+									<Rectangle Grid.Row="1" Grid.Column="0" Width="16" Height="16" Fill="#ffffff" />
+									<Rectangle Grid.Row="1" Grid.Column="1" Width="16" Height="16" Fill="#d7d7d7" />
+								</Grid>
+							</VisualBrush.Visual>
+						</VisualBrush>
+					</Border.Background>
+					<!-- BitmapScalingMode HighQuality and SnapsToDevicePixels False makes this look nicer w/ differing monitor DPIs / scale percentages -->
+					<Image Name="Image" RenderOptions.BitmapScalingMode="HighQuality" SnapsToDevicePixels="False" Source="{Binding Path=FilePath}" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="{Binding ImageStretch}" />
+				</Border>
 			</Border>
 		</Border>
 	</Grid>

@@ -3,8 +3,8 @@
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<AssemblyVersion>1.0.2</AssemblyVersion>
-		<FileVersion>1.0.2</FileVersion>
+		<AssemblyVersion>1.0.3</AssemblyVersion>
+		<FileVersion>1.0.3</FileVersion>
 		<Title>SkiaSharp Visualizer</Title>
 		<Company>MapLarge</Company>
 		<PackageProjectUrl>https://github.com/MapLarge/SkiaSharpVisualizer</PackageProjectUrl>

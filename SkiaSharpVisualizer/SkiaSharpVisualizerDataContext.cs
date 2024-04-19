@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Extensibility.DebuggerVisualizers;
+﻿using Microsoft.VisualStudio.Extensibility;
+using Microsoft.VisualStudio.Extensibility.DebuggerVisualizers;
 using Microsoft.VisualStudio.Extensibility.UI;
 using Microsoft.VisualStudio.RpcContracts.DebuggerVisualizers;
 using System;
@@ -19,6 +20,8 @@ namespace SkiaSharpVisualizer {
 		public SkiaSharpVisualizerDataContext(VisualizerTarget visualizerTarget) {
 			this.visualizerTarget = visualizerTarget;
 			visualizerTarget.StateChanged += this.OnStateChangedAsync;
+
+			this.OpenExternalCommand = new OpenExternalCommand(this);
 		}
 
 		[DataMember]
@@ -68,22 +71,17 @@ namespace SkiaSharpVisualizer {
 		[DataMember]
 		public int BorderThickness => _isBordered ? 3 : 0;
 
-		private async Task OnStateChangedAsync(object? sender, VisualizerTargetStateNotification args) {
-			var dataSource = await GetRequestAsync(args);
+		private const int MAXFILEPATHS = 5;
+		private SortedDictionary<string, string> byteFilePaths = new();
+		private SortedDictionary<string, DateTimeOffset> byteLastAccess = new();
 
-			//This is where we'd delete the previous image if WPF/VS didn't lock it.
-			var prevFilePath = this.FilePath;
-			this.FilePath = null;
+		[DataMember]
+		public IAsyncCommand OpenExternalCommand { get; }
 
-			//There seems to be a bug with the data template and using a BitmapSource from the data context, so we will write the png to a temp file since binding to a url works.
-			var tmpFilePath = System.IO.Path.ChangeExtension(System.IO.Path.GetTempFileName(), "png");
-			var pngBase64 = dataSource?.pngBase64;
-			var pngBytes = !string.IsNullOrWhiteSpace(pngBase64) ? System.Convert.FromBase64String(pngBase64) : Array.Empty<byte>();
-			await System.IO.File.WriteAllBytesAsync(tmpFilePath, pngBytes);
+#if DEBUG
+		private readonly List<string> failedToDeleteFiles = new();
+#endif
 
-			this.FilePath = tmpFilePath;
-			this.Model = dataSource;
-		}
 		private async Task<SkiaSharpVisualizerDataSource?> GetRequestAsync(VisualizerTargetStateNotification args) {
 			switch (args) {
 				case VisualizerTargetStateNotification.Available:
@@ -96,14 +94,139 @@ namespace SkiaSharpVisualizer {
 			}
 		}
 
+		private async Task OnStateChangedAsync(object? sender, VisualizerTargetStateNotification args) {
+			var dataSource = await GetRequestAsync(args);
+			
+			CleanupUsedFilePaths();
+
+			//No data.
+			var pngBase64 = dataSource?.pngBase64;
+			if (string.IsNullOrWhiteSpace(pngBase64)) {
+				ResetBindings();
+				return;
+			}
+
+			var pngBytes = System.Convert.FromBase64String(pngBase64);
+			try {
+				//Is this the same image we've shown already?
+				if (byteFilePaths.TryGetValue(pngBase64, out var fp) && System.IO.File.Exists(fp) && System.IO.File.ReadAllBytes(fp).SequenceEqual(pngBytes)) {
+					this.byteLastAccess[pngBase64] = DateTimeOffset.Now;
+					this.FilePath = fp;
+					this.Model = dataSource;
+					return;
+				}
+			} catch {
+				//Ignore any lookup errors.
+			}
+
+			//Using a BitmapSource on the data context is not serializable cross-process, so we will write the png to a temp file since binding to a url works.
+			try {
+				var tmpFilePath = System.IO.Path.ChangeExtension(System.IO.Path.GetTempFileName(), "png");
+				await System.IO.File.WriteAllBytesAsync(tmpFilePath, pngBytes);
+
+				this.byteFilePaths[pngBase64] = tmpFilePath;
+				this.byteLastAccess[pngBase64] = DateTimeOffset.Now;
+				this.FilePath = tmpFilePath;
+				this.Model = dataSource;
+			} catch {
+				//Something terrible happened.
+				ResetBindings();
+			}
+		}
+
+		private void CleanupUsedFilePaths() {
+			//Once we hit the max limit, remove the oldest tracked file.
+			if (byteLastAccess.Count < MAXFILEPATHS) {
+				return;
+			}
+
+			var oldestFile = byteLastAccess.First();
+			if (!byteFilePaths.TryGetValue(oldestFile.Key, out var filePath)) {
+				//Shouldn't happen.
+				byteLastAccess.Remove(oldestFile.Key);
+				return;
+			}
+
+			byteFilePaths.Remove(oldestFile.Key);
+			byteLastAccess.Remove(oldestFile.Key);
+			try {
+				//Make an attempt to remove the file.
+				System.IO.File.Delete(filePath);
+			} catch {
+				//Ignore IO errors
+#if DEBUG
+				failedToDeleteFiles.Add(filePath);
+#endif
+			}
+		}
+		private void ResetBindings() {
+			this.FilePath = null;
+			this.Model = null;
+		}
+		private void RemoveAllFiles() {
+			foreach (var kvp in byteFilePaths) {
+				try {
+					//Make an attempt to remove the file. VS locks them for a while, so we might not get them all.
+					System.IO.File.Delete(kvp.Value);
+				} catch {
+					//Ignore IO errors
+#if DEBUG
+					failedToDeleteFiles.Add(kvp.Value);
+#endif
+				}
+			}
+
+			this.byteFilePaths.Clear();
+			this.byteLastAccess.Clear();
+		}
+
 		public void Dispose() {
 			visualizerTarget.StateChanged -= this.OnStateChangedAsync;
 			this.visualizerTarget.Dispose();
 
-			//This is where we'd delete the previous image if WPF/VS didn't lock it.
-			var prevFilePath = this.FilePath;
-			this.FilePath = null;
+			this.ResetBindings();
+			this.RemoveAllFiles();
 		}
 
 	}
+
+	public class OpenExternalCommand : NotifyPropertyChangedObject, IAsyncCommand {
+
+		private bool executeFailed = false;
+		public bool CanExecute => !executeFailed && !string.IsNullOrWhiteSpace(context.FilePath);
+
+		private readonly SkiaSharpVisualizerDataContext context;
+		public OpenExternalCommand(SkiaSharpVisualizerDataContext context) {
+			this.context = context;
+			this.context.PropertyChanged += Context_PropertyChanged;
+		}
+
+		private void Context_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e) {
+			switch (e.PropertyName) {
+				case nameof(context.FilePath):
+					this.RaiseNotifyPropertyChangedEvent("CanExecute");
+					break;
+			}
+		}
+
+		public Task ExecuteAsync(object? parameter, IClientContext clientContext, CancellationToken cancellationToken) {
+			var filePath = parameter as string;
+			if (string.IsNullOrWhiteSpace(filePath)) {
+				return Task.CompletedTask;
+			}
+
+			try {
+				//Need UseShellExecute to run an image file.
+				var info = new System.Diagnostics.ProcessStartInfo(filePath);
+				info.UseShellExecute = true;
+				using var _ = System.Diagnostics.Process.Start(info);
+			} catch {
+				//Hopefully doesn't happen.
+				this.executeFailed = true;
+				this.RaiseNotifyPropertyChangedEvent("CanExecute");
+			}
+			return Task.CompletedTask;
+		}
+	}
+
 }
