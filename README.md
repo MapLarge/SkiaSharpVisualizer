@@ -9,13 +9,16 @@ The extension adds a new UI item to view SkiaSharp SKBitmap, SKImage, and SKSurf
 ![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/932c0544-dea0-445a-a052-e971878af182)
 
 When viewing, you will see a tool window containing a graphical preview of the image.
-![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/e7c97551-7767-4e4a-8f87-c66feec7dcdd)
+![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/5d4fafcd-79e1-4b07-86ed-f92d362c3a4f)
 
 The stretch option will make the image fill the entire dialog space.
-![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/42625fa9-4e31-4751-b442-c9ed632e4ee8)
+![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/53b09954-003d-45f6-a494-1ad2cd72771a)
 
 The bordered option will add an indicator border around the image so you can figure out the boundary of an image with transparency.
-![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/e4ce3b8a-a81b-4f38-9423-3313cc6e60d4)
+![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/771741e4-413d-4414-97d9-c59cdfddf2a7)
+
+The "Open in External Viewer" button will launch the default viewer for PNG files.
+![image](https://github.com/MapLarge/SkiaSharpVisualizer/assets/38544371/327bf856-cace-4d09-9c7c-7c5d5b31c5b3)
 
 ## Contributing
 PRs and suggestions are welcome, or you can fork this project and make your own enhancements.
